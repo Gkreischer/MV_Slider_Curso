@@ -28,6 +28,9 @@ if(!class_exists('MV_Slider')) {
             // Cria CPT
             require_once(MV_SLIDER_PATH . 'post-types/class.mv-slider-cpt.php');
             $MV_Slider_Post_Type = new MV_Slider_Post_Type();
+
+            // Adicionando menu options para gerenciamento do plugin
+            add_action('admin_menu', array($this, 'add_menu_options'));
         }
 
         public function define_constants() 
@@ -52,6 +55,45 @@ if(!class_exists('MV_Slider')) {
 
         public static function uninstall() {
             
+        }
+
+        public function add_menu_options()
+        {
+            // Referência para tipos de usuários e capacidades: https://wordpress.org/documentation/article/roles-and-capabilities/#capability-vs-role-table
+            // Cria menu
+            add_menu_page('MV Slider Options', 'MV Slider', 'manage_options', 'mv-slider-admin', array($this, 'mv_slider_settings_page'), 'dashicons-images-alt2');
+            // Se usar add_plugins_page, incluimos um submenu dentro de plugins. Basta usar os mesmos argumentos do add_menu_page acima, removendo o ícone
+            // Se usar add_theme_page, ele aparece em aparência
+            // Se usar add_options_page, ele aparecerá em configurações
+
+            // Adiciona o submenu Manage Slides dentro dentro de MV Slider
+            add_submenu_page(
+                'mv-slider-admin',
+                'Manage Slides',
+                'Manage Slides',
+                'manage_options',
+                // Aqui estamos passando a página do CPT previamente criada
+                'edit.php?post_type=mv-slider',
+                null,
+                null
+            );
+
+            // Adiciona o submenu Add New Slide dentro dentro de MV Slider
+            add_submenu_page(
+                'mv-slider-admin',
+                'Add New Slide',
+                'Add New Slide',
+                'manage_options',
+                // Aqui estamos passando a página do CPT previamente criada
+                'post-new.php?post_type=mv-slider',
+                null,
+                null
+            );
+        }
+
+        public function mv_slider_settings_page()
+        {
+            echo 'This is a test page';
         }
 
 

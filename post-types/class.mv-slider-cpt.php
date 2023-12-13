@@ -38,7 +38,9 @@ if (!class_exists('MV_Slider_Post_Type')) {
                     // Relacionado ao public, mostra a área de edição do post
                     'show_ui' => true,
                     // Relacionado ao show_ui
-                    'show_in_menu' => true,
+                    // Após criar o MV slider no menu, não há mais necessidade de usar true, pois teremos Sliders e MV Slider
+                    // Assim, o CPT aparecerá em MV Sliders
+                    'show_in_menu' => false,
                     'menu_position' => 5,
                     // Exibe a opção em New, na barra superior
                     'show_in_admin_bar' => true,
