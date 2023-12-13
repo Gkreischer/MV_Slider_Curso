@@ -14,34 +14,44 @@
  * Domain Path: /languages
  */
 
-/*
- MV Slider is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- any later version.
- MV Slider is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with this program; if not, see <http://www.gnu.org/licenses/gpl-2.0.html>.
- */
-
 // Bloqueia execução externa
-if (!defined(ABSPATH)) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 if(!class_exists('MV_Slider')) {
     class MV_Slider {
         
         function __construct()
         {
-            
+            $this->define_constants();
+            // Cria CPT
+            require_once(MV_SLIDER_PATH . 'post-types/class.mv-slider-cpt.php');
+            $MV_Slider_Post_Type = new MV_Slider_Post_Type();
         }
 
         public function define_constants() 
         {
             define('MV_SLIDER_PATH', plugin_dir_path(__FILE__));
-            define('MV_SLIDER_URL', plugin_dir_path(__FILE__));
+            define('MV_SLIDER_URL', plugin_dir_url(__FILE__));
+            define('MV_SLIDER_VERSION', '1.0.0');
+        }
+
+        public static function activate()
+        {
+            // Refazer os links permanentes para evitar erros de CPT
+            update_option('rewrite_rules', '');
+        }
+
+        public static function deactivate()
+        {
+            flush_rewrite_rules();
+            // Remove CPT
+            unregister_post_type('mv_slider');
+        }
+
+        public static function uninstall() {
+            
         }
 
 
@@ -49,5 +59,11 @@ if(!class_exists('MV_Slider')) {
 }
 
 if(class_exists('MV_Slider')) {
+    // Hook para ativação do plugin. O segundo parâmetro precisa ser estático
+    register_activation_hook(__FILE__, array('MV_Slider', 'activate'));
+    // Hook para desativação do plugin. O segundo parâmetro precisa ser estático
+    register_deactivation_hook(__FILE__, array('MV_Slider', 'deactivate'));
+    // Hook para desinstalação do plugin. O segundo parâmetro precisa ser estático
+    register_uninstall_hook(__FILE__, array('MV_Slider', 'uninstall'));
     $mv_slider = new MV_Slider();
 }
