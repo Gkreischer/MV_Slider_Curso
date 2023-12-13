@@ -31,6 +31,9 @@ if(!class_exists('MV_Slider')) {
 
             // Adicionando menu options para gerenciamento do plugin
             add_action('admin_menu', array($this, 'add_menu_options'));
+
+            require_once(MV_SLIDER_PATH . 'class.mv-slider-settings.php');
+            $MV_Slider_Settings = new MV_Slider_Settings();
         }
 
         public function define_constants() 
@@ -93,7 +96,8 @@ if(!class_exists('MV_Slider')) {
 
         public function mv_slider_settings_page()
         {
-            echo 'This is a test page';
+            require_once(MV_SLIDER_PATH . 'views/settings-page.php');
+            // $MV_Slider_Admin = new MV_Slider_Admin();
         }
 
 
