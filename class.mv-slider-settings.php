@@ -21,6 +21,9 @@ if (!class_exists('MV_Slider_Settings')) {
             register_setting(
                 'mv_slider_group',
                 'mv_slider_options',
+                [
+                    $this, 'mv_slider_validate'
+                ]
             );
 
             add_settings_section(
@@ -132,6 +135,42 @@ if (!class_exists('MV_Slider_Settings')) {
                 ?>
             </select>
             <?php
+        }
+
+        public function mv_slider_validate($input)
+        {
+            $new_input = [];
+
+            foreach($input as $key => $value)
+            {
+                // Jeito genérico de resolver, porém só resolve para campos do tipo strings
+                // $new_input[$key] = sanitize_text_field($value);
+
+                switch($key) {
+                    case 'mv_slider_title':
+                        if(empty($value)) {
+                            $value = 'Please, type some text';
+                        }
+                        $new_input[$key] = sanitize_text_field($value);
+                        break;
+
+                    // Exemplos de cada tipo de validação: URL e int
+                    // case 'mv_slider_url':
+                    //     $new_input[$key] = esc_url_raw($value);
+                    //     break;
+                    
+                    // case 'mv_slider_int':
+                    //     $new_input[$key] = absint($value);
+                    //     break;
+                    
+                    default:
+                        $new_input[$key] = sanitize_text_field($value);
+                        break;
+                }
+
+            }
+
+            return $new_input;
         }
     }
 }
