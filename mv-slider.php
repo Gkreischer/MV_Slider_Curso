@@ -96,8 +96,16 @@ if(!class_exists('MV_Slider')) {
 
         public function mv_slider_settings_page()
         {
+            // Verifica se o usuário tem permissão para acessar o painel
+            if(!current_user_can('manage_options')) {
+                return;
+            }
+            // Exibe mensagem de sucesso ao salvar
+            if(isset($_GET['settings-updated'])) {
+                add_settings_error('mv_slider_options', 'mv_slider_message', 'Settings Saved', 'success');
+            }
+            settings_errors('mv_slider_options');
             require_once(MV_SLIDER_PATH . 'views/settings-page.php');
-            // $MV_Slider_Admin = new MV_Slider_Admin();
         }
 
 
