@@ -8,7 +8,7 @@ if (!class_exists('MV_Slider_Settings')) {
 
         public function __construct()
         {
-            // Como é estático, usamos o self
+            // Como é estático, usamos o self para obter os dados de mv_slider_options
             self::$options = get_option('mv_slider_options');
 
             add_action('admin_init', array($this, 'admin_init'));

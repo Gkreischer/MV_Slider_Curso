@@ -34,6 +34,15 @@ if(!class_exists('MV_Slider')) {
 
             require_once(MV_SLIDER_PATH . 'class.mv-slider-settings.php');
             $MV_Slider_Settings = new MV_Slider_Settings();
+
+            require_once(MV_SLIDER_PATH . 'shortcodes/class.mv-slider-shortcode.php');
+            $MV_Slider_Shortcode = new MV_Slider_Shortcode();
+
+            // Obriga o carregamento por último dos css e scripts
+            add_action('wp_enqueue_scripts', array($this, 'register_scripts'), 999);
+
+            // Agora carrega os arquivos no lado do admin
+            add_action('admin_enqueue_scripts', array($this, 'register_admin_scripts'));
         }
 
         public function define_constants() 
@@ -108,6 +117,32 @@ if(!class_exists('MV_Slider')) {
             require_once(MV_SLIDER_PATH . 'views/settings-page.php');
         }
 
+        public function register_scripts()
+        {
+            // Os dois últimos parâmetros são para dizer a dependência (Jquery) e se será carregado no head ou ao final do body, em </body>
+            wp_register_script('mv-slider-main-jq', MV_SLIDER_URL . 'vendor/flexslider/jquery.flexslider-min.js', array('jquery'), MV_SLIDER_VERSION, true);
+            wp_register_script('mv-slider-options-js', MV_SLIDER_URL . 'vendor/flexslider/flexslider.js', array('jquery'), MV_SLIDER_VERSION, true);
+            // Registra o CSS. Último parâmetro é pra definir os media types (all, print, screen) ou media queries
+            wp_register_style('mv-slider-css', MV_SLIDER_URL . 'vendor/flexslider/flexslider.css', array(), MV_SLIDER_VERSION, 'all');
+        }
+
+        public function register_admin_scripts()
+        {
+            // Usando a variável global typenow, verifica qual o tipo de CPT que estamos editando para evitar carregamento do CSS em outros CPTs/Posts. 
+            //Também verifica se a edição está sendo feito em uma página ($typenow == 'page'), em uma postagem ($typenow == 'post') ou em um custom CTP ($typenow == 'custom-post-type')
+            global $typenow;
+
+            if($typenow == 'mv-slider'){
+                wp_enqueue_style('mv-slider-admin', MV_SLIDER_URL . 'assets/css/admin.css', array(), MV_SLIDER_VERSION);
+            }
+
+            // Também poderiamos usar a variável global pagenow que verifica qual a página que está sendo editada. Por exemplo:
+            // global $pagenow;
+            // if('post.php' == $pagenow) {
+            //     wp_enqueue_style('mv-slider-admin', MV_SLIDER_URL . 'assets/css/admin.css', array(), MV_SLIDER_VERSION);
+
+            // }
+        }
 
     }
 }
