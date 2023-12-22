@@ -25,6 +25,9 @@ if(!class_exists('MV_Slider')) {
         function __construct()
         {
             $this->define_constants();
+
+            require_once(MV_SLIDER_PATH . 'functions/functions.php');
+
             // Cria CPT
             require_once(MV_SLIDER_PATH . 'post-types/class.mv-slider-cpt.php');
             $MV_Slider_Post_Type = new MV_Slider_Post_Type();
@@ -121,9 +124,10 @@ if(!class_exists('MV_Slider')) {
         {
             // Os dois últimos parâmetros são para dizer a dependência (Jquery) e se será carregado no head ou ao final do body, em </body>
             wp_register_script('mv-slider-main-jq', MV_SLIDER_URL . 'vendor/flexslider/jquery.flexslider-min.js', array('jquery'), MV_SLIDER_VERSION, true);
-            wp_register_script('mv-slider-options-js', MV_SLIDER_URL . 'vendor/flexslider/flexslider.js', array('jquery'), MV_SLIDER_VERSION, true);
             // Registra o CSS. Último parâmetro é pra definir os media types (all, print, screen) ou media queries
-            wp_register_style('mv-slider-css', MV_SLIDER_URL . 'vendor/flexslider/flexslider.css', array(), MV_SLIDER_VERSION, 'all');
+            wp_register_style('mv-slider-main-css', MV_SLIDER_URL . 'vendor/flexslider/flexslider.css', array(), MV_SLIDER_VERSION, 'all');
+            wp_register_style( 'mv-slider-style-css', MV_SLIDER_URL . 'assets/css/frontend.css', array(), MV_SLIDER_VERSION, 'all' );
+
         }
 
         public function register_admin_scripts()

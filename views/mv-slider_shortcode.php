@@ -1,6 +1,6 @@
 <!-- Content é o parâmetro do shortcode, é o texto que é utilizando entre os colchetes. Ex: [mv_slider]Lorem ipsum...[/mv_slider] -->
 <h3><?php echo (!empty($content)) ? esc_html($content) : esc_html(MV_Slider_Settings::$options['mv_slider_title']); ?></h3>
-<div class="mv-slider flexslider ">
+<div class="mv-slider flexslider <?= isset(MV_Slider_Settings::$options['mv_slider_style']) ? esc_attr(MV_Slider_Settings::$options['mv_slider_style']) : ''; ?>">
     <ul class="slides">
         <?php
 
@@ -23,7 +23,15 @@
 
         ?>
         <li>
-            <?php the_post_thumbnail('full', ['class' => 'img-fluid']); ?>
+            
+            <?php 
+            // Verifica se uma imagem foi definida no slider
+            if(has_post_thumbnail()) {
+                the_post_thumbnail('full', ['class' => 'img-fluid']); 
+            } else {
+                echo mv_slider_get_placeholder_image();
+            }
+            ?>
             <div class="mvs-container">
                 <div class="slider-details-container">
                     <div class="wrapper">

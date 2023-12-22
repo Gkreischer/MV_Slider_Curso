@@ -40,8 +40,10 @@ if (!class_exists('MV_Slider_Shortcode')) {
             require(MV_SLIDER_PATH . 'views/mv-slider_shortcode.php');
             // Carrega os scripts e o CSS quando o shortcode for carregado
             wp_enqueue_script('mv-slider-main-jq');
-            wp_enqueue_script('mv-slider-options-js');
-            wp_enqueue_style('mv-slider-css');
+            wp_enqueue_style('mv-slider-main-css');
+            wp_enqueue_style('mv-slider-style-css');
+            // Chama o arquivo JS passando parâmetros do PHP
+            mv_slider_options();
             return ob_get_clean();
         }
     }
