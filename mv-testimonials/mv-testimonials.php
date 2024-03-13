@@ -67,7 +67,7 @@ if (!class_exists('MV_Testimonials')) {
             if (current_theme_supports('mv-testimonials')) {
                 // Verifica se o CPT é o mv-testimonials
                 if (is_post_type_archive('mv-testimonials')) {
-                    $template = MV_TESTIMONIALS_PATH . '/views/templates/archive-mv-testimonials.php';
+                    $template = $this->get_template_part_location('archive-mv-testimonials.php');
                 }
             }
 
@@ -85,7 +85,7 @@ if (!class_exists('MV_Testimonials')) {
             if (current_theme_supports('mv-testimonials')) {
                 // Verifica se a página single.php acessada é de mv-testimonials
                 if (is_singular('mv-testimonials')) {
-                    $template = MV_TESTIMONIALS_PATH . '/views/templates/single-mv-testimonials.php';
+                    $template = $this->get_template_part_location('single-mv-testimonials.php');
                 }
             }
 
@@ -102,6 +102,22 @@ if (!class_exists('MV_Testimonials')) {
             define('MV_TESTIMONIALS_PATH', plugin_dir_path(__FILE__));
             define('MV_TESTIMONIALS_URL', plugin_dir_url(__FILE__));
             define('MV_TESTIMONIALS_VERSION', '1.0.0');
+            define('MV_TESTIMONIALS_OVERRIDE_PATH_DIR', get_stylesheet_directory() . '/mv-testimonials/');
+        }
+
+        /**
+         * Sobreescreve os arquivos de template
+         *
+         * @param [type] $file
+         * @return void
+         */
+        public function get_template_part_location($file)
+        {
+            if(file_exists(MV_TESTIMONIALS_OVERRIDE_PATH_DIR . $file)) {
+                return MV_TESTIMONIALS_OVERRIDE_PATH_DIR . $file;
+            } else {
+                return MV_TESTIMONIALS_PATH . '/views/templates/' . $file;
+            }
         }
 
         /**
