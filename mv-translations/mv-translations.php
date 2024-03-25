@@ -42,6 +42,9 @@ if (!class_exists('MV_Translations')) {
         {
 
             $this->define_constants();
+
+            require_once(MV_TRANSLATIONS_PATH . '/post-types/class.mv-translations-cpt.php');
+            $MVTranslationsPostType = new MV_Translations_Post_Type();
         }
 
         public function define_constants()
@@ -128,6 +131,7 @@ if (!class_exists('MV_Translations')) {
         public static function deactivate()
         {
             flush_rewrite_rules();
+            unregister_post_Type('mv_translation');
         }
 
         /**
