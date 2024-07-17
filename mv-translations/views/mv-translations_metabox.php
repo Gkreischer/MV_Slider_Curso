@@ -7,7 +7,7 @@
     $query = $wpdb->prepare("SELECT * FROM $wpdb->translationsmeta WHERE translation_id = %d", get_the_ID());
     // OBJECT, OBJECT_K, ARRAY_N, ARRAY_A
     $results = $wpdb->get_results($query, ARRAY_A);
-    print_r($results);
+    // print_r($results);
 ?>
 
 <table class="form-table mv-translations-metabox"> 
