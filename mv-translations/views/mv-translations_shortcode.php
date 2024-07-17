@@ -1,5 +1,10 @@
 <?php
 
+if(!is_user_logged_in()) {
+    mvt_register_user();
+    return;
+}
+
 if( isset( $_POST['mv_translations_nonce'] ) ){
     if( ! wp_verify_nonce( $_POST['mv_translations_nonce'], 'mv_translations_nonce' ) ){
         return;
