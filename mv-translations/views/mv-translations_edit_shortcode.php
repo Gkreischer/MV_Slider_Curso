@@ -70,8 +70,8 @@ $q = $wpdb->prepare(
     $current_user->ID
 );
 $results = $wpdb->get_results($q, ARRAY_A);
-var_dump($results);
-
+// var_dump($results);
+if( current_user_can( 'edit_post', $_GET['post'] )):
 ?>
 <div class="mv-translations">
     <form action="" method="POST" id="translations-form">
@@ -120,3 +120,10 @@ var_dump($results);
     <br>
     <a href="<?php echo esc_url( home_url( '/submit-translation' ) ); ?>"><?php esc_html_e( 'Back to translations list', 'mv-translations' ); ?></a>
 </div>
+<?php endif; ?>
+// Garante que os dados não sejam enviados ao recarregar a página
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>

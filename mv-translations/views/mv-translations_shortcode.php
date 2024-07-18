@@ -154,3 +154,9 @@ if($wpdb->num_rows):
         </table>
         <?php endif; ?>
 </div>
+<script>
+// Garante que os dados não sejam enviados ao recarregar a página
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>

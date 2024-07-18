@@ -39,6 +39,8 @@ if( !class_exists( 'MV_Translations' )){
 
 		public function __construct(){
 
+            $this->load_text_domain();
+
 			$this->define_constants(); 
 
             require_once(MV_TRANSLATIONS_PATH . 'functions/functions.php');
@@ -54,6 +56,8 @@ if( !class_exists( 'MV_Translations' )){
 
             add_action('wp_enqueue_scripts', array($this, 'register_scripts'), 999);
 
+            add_filter('single_template', array($this, 'load_custom_single_template'));
+
             			
 		}
 
@@ -63,6 +67,10 @@ if( !class_exists( 'MV_Translations' )){
             define ( 'MV_TRANSLATIONS_URL', plugin_dir_url( __FILE__ ) );
             define ( 'MV_TRANSLATIONS_VERSION', '1.0.0' );
 		}
+
+        public function load_text_domain() {
+            load_plugin_textdomain('mv-translations', false, basename(dirname(__FILE__)) . '/languages');
+        }
 
         /**
          * Activate the plugin
@@ -138,12 +146,35 @@ if( !class_exists( 'MV_Translations' )){
          * Uninstall the plugin
          */
         public static function uninstall(){
+            delete_option('mv_translation_db_version');
 
+            global $wpdb;
+
+            $wpdb->query("DELETE FROM $wpdb->posts WHERE post_type = 'mv-translations'");
+            // Apaga as páginas criadas pelo plugin
+            $wpdb->query("DELETE FROM $wpdb->posts WHERE post_type = 'page' AND post_name IN ('submit-translation', 'edit-translation')");
+            
+            $wpdb->query("DROP TABLE IF EXISTS $wpdb->prefix.translationmeta");
+
+            flush_rewrite_rules();
+            unregister_post_type('mv-translations');
         }       
 
         public function register_scripts() {
             wp_register_script('custom_js', MV_TRANSLATIONS_URL . 'assets/jquery.custom.js', array('jquery'), MV_TRANSLATIONS_VERSION, true);
             wp_register_script('validate_js', MV_TRANSLATIONS_URL . 'assets/jquery.validate.min.js', array('jquery'), MV_TRANSLATIONS_VERSION, true);
+            if(is_singular('mv-translations')){
+                wp_enqueue_style('mv-translations', MV_TRANSLATIONS_URL . 'assets/style.css', array(''), MV_TRANSLATIONS_VERSION, 'all');
+                
+            }
+        }
+
+        public function load_custom_single_template($template){
+            if(is_singular('mv-translations')){
+                $template = MV_TRANSLATIONS_PATH . 'views/templates/single-mv-translations.php';
+            }
+            return $template;
+        
         }
 
 	}
