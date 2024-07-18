@@ -105,6 +105,27 @@ if( isset( $_POST['submitted'])){
     </form>
 </div>
 <div class="translations-list">
+    <?php 
+
+global $current_user;
+global $wpdb;
+$table_translationmeta = $wpdb->prefix . 'translationmeta';
+$q = $wpdb->prepare(
+    "SELECT ID, post_author, post_date, post_title, meta_key, meta_value, post_status
+    FROM {$wpdb->posts} AS p 
+    INNER JOIN {$table_translationmeta} AS tm 
+    ON p.ID = tm.translation_id 
+    WHERE p.post_author = %d 
+    AND tm.meta_key = 'mv_translations_transliteration' 
+    AND p.post_status IN ('publish', 'pending') 
+    ORDER BY p.post_date DESC", 
+    $current_user->ID
+);
+$results = $wpdb->get_results($q);
+// var_dump($results);
+// Propriedade relativa a ultima query executada
+if($wpdb->num_rows):
+    ?>
             <table>
                 <caption><?php esc_html_e( 'Your Translations', 'mv-translations' ); ?></caption>
                 <thead>
@@ -118,14 +139,18 @@ if( isset( $_POST['submitted'])){
                     </tr>
                 </thead>  
                 <tbody>  
+                    <?php foreach($results as $result): ?>
                     <tr>
-                        <td>Date</td>
-                        <td>Title</td>
-                        <td>Transliteraton</td>
-                        <td>Edit</td>
-                        <td>Delete</td>
-                        <td>Status</td>
+                        <td><?php echo esc_html(date('M/d/Y', strtotime($result->post_date))); ?></td>
+                        <td><?php echo esc_html($result->post_title); ?></td>
+                        <td><?php echo $result->meta_value == 'Yes' ? esc_html__('Yes', 'mv-translations') : esc_html__('No', 'mv-translations'); ?></td>
+                        <?php $edit_post = add_query_arg('post', $result->ID, home_url('/edit-translation')); ?>
+                        <td><a href="<?php echo esc_url($edit_post); ?>"><?php esc_html_e( 'Edit', 'mv-translations' ); ?></a></td>
+                        <td><a onclick="return confirm('Are you sure you want delete post: <?php echo $result->post_title ?>?')" href="<?php echo get_delete_post_link($result->ID, "", true); ?>"><?php esc_html_e( 'Delete', 'mv-translations' ); ?></a></td>
+                        <td><?php echo $result->post_status == 'publish' ? esc_html__('Published', 'mv-translations') : esc_html__('Pending', 'mv-translations'); ?></td>
                     </tr>
+                    <?php endforeach; ?>
             </tbody>
         </table>
+        <?php endif; ?>
 </div>
